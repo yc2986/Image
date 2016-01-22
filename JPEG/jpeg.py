@@ -159,7 +159,7 @@ def predictor(im, predict_mode = 0):
 			elif predict_mode == 1:
 				predict = im_pad[i, jj]
 			else:
-				predict = im_pad[ii,jj]
+				predict = (im_pad[ii,jj] + im_pad[ii,j] + im_pad[i,jj]) / 3
 			err[ii, jj] = predict - im_pad[i, j]
 	return err
 
@@ -249,6 +249,6 @@ if __name__ == "__main__":
 	# Lossless predictor
 	src = '../lena.tiff'
 	mode = 'YCbCr'
-	predict_mode = 0
+	predict_mode = 2
 	hist, entro = JPEG_LS(src, predict_mode = predict_mode)
 	print 'Entropy: ', entro
