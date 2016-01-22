@@ -169,7 +169,7 @@ def entropy(hist):
 	e = -np.sum(p * np.log2(p))
 	return e
 
-def JPEG(src, mode = 'YCbCr', transform = 'DCT', draw = True, luma_scale = 1, chroma_scale = 1):
+def JPEG(src, mode = 'YCbCr', transform = 'DCT', draw = True, save = True, luma_scale = 1, chroma_scale = 1):
 	# mode = 'YCbCr' or 'L'
 	# transform = 'DCT' or 'DFT' or 'None'
 	block_size = 8
@@ -198,11 +198,15 @@ def JPEG(src, mode = 'YCbCr', transform = 'DCT', draw = True, luma_scale = 1, ch
 	elif mode == 'L':
 		img = 255 - img
 
+	if save:
+		img = Image.fromarray(np.uint8(img))
+		img.save('Compression.tiff')
+
 	if draw:
 		plot(img, mode)
 	return img
 
-def JPEG_LS(src, mode = 'YCbCr', predict_mode = 0, draw_hist = True):
+def JPEG_LS(src, mode = 'YCbCr', predict_mode = 0, draw_hist = True, save = True):
 	img = load(src, mode)
 	err = np.empty_like(img).astype(np.int32)
 	hist = 0
@@ -217,25 +221,31 @@ def JPEG_LS(src, mode = 'YCbCr', predict_mode = 0, draw_hist = True):
 		hist_cr, lower_edges = np.histogram(err[:,:,2], bins = np.arange(512) - 255)
 		hist = [hist_y, hist_cb, hist_cr]
 		e = [entropy(hist_y), entropy(hist_cb), entropy(hist_cr)]
-		if draw_hist == True:
-			plt.figure()
-			plt.subplot(311)
-			plt.bar(bins, hist_y)
-			plt.title('Y')
-			plt.subplot(312)
-			plt.bar(bins, hist_cb)
-			plt.title('Cb')
-			plt.subplot(313)
-			plt.bar(bins, hist_cr)
+		plt.figure()
+		plt.subplot(311)
+		plt.bar(bins, hist_y)
+		plt.title('Y')
+		plt.subplot(312)
+		plt.bar(bins, hist_cb)
+		plt.title('Cb')
+		plt.subplot(313)
+		plt.bar(bins, hist_cr)
+		plt.tight_layout()
+		if save:
+			plt.savefig('hist.png')
+		if draw_hist:
 			plt.show()
 	elif mode == 'L':
 		err = predictor(img, predict_mode)
 		hist, lower_edges = np.histogram(err, bins = np.arange(512) - 255)
 		e = entropy(hist)
-		if draw_hist == True:
-			plt.figure()
-			plt.bar(bins, hist)
-			plt.title('Grayscale')
+		plt.figure()
+		plt.bar(bins, hist)
+		plt.title('Grayscale')
+		plt.tight_layout()
+		if save:
+			plt.savefig('hist.png')
+		if draw_hist:
 			plt.show()
 	return hist, e
 
