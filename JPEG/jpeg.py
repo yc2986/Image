@@ -53,7 +53,7 @@ def plot(im, mode = 'YCbCr'):
 	if mode == 'YCbCr':
 		imshow(im)
 	elif mode == 'L':
-		imshow(im, cmap = cm.Greys)
+		imshow(im, cmap = cm.gray)
 	plt.show()
 
 def dct2(im):
@@ -196,7 +196,7 @@ def JPEG(src, mode = 'YCbCr', transform = 'DCT', draw = True, save = True, luma_
 	if mode == 'YCbCr':
 		img = ycbcr2rgb(img)
 	elif mode == 'L':
-		img = 255 - img
+		img = img
 
 	if save:
 		img = Image.fromarray(np.uint8(img))

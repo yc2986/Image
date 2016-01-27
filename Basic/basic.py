@@ -14,14 +14,14 @@ to your program.
 def load(src):
 	im = Image.open(src).convert('L')
 	width, height = im.size
-	greyscale_map = 255 - np.array(list(im.getdata())).reshape((width, height))
+	greyscale_map = np.array(list(im.getdata())).reshape((width, height))
 	return np.uint8(greyscale_map)
 
 def quantize(im, scale):
 	return im / scale * scale
 
 def plot(im):
-	imshow(im, cmap = cm.Greys)
+	imshow(im, cmap = cm.gray)
 	plt.show()
 
 def blur(im, neighbor):
